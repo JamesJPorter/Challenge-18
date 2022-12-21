@@ -1,4 +1,5 @@
-const {User} = require('../models')
+const {User} = require('../models');
+const { findById } = require('../models/User');
 
 module.exports = {
     //Create a user 
@@ -32,4 +33,32 @@ addFriend(req, res) {
         console.log(err); 
         return res.status(500).json(err);
     });
-}}
+}, 
+
+//read all users
+readAllUsers(req, res){
+    User.find({}).then((allUsers) => !allUsers ? res.status(404).json({message: 'No users!' }) : res.json(allUsers))
+    .catch((err) => {
+        console.log(err); 
+        return res.status(500).json(err);})
+},
+
+//find one user by _id
+findById(req, res){
+    User.findOne(
+        {_id: req.params.userId}
+    ).then((singleUser) => !singleUser ? res.status(404).json({message: 'No user with this Id!' }) : res.json(singleUser))
+    .catch((err) => {
+        console.log(err); 
+        return res.status(500).json(err);})
+}, 
+
+deleteUser(req, res){
+    User.deleteOne(
+        {_id: req.params.userId}
+    ).then((singleUser) => !singleUser ? res.status(404).json({message: 'No user with this Id!' }) : res.json(singleUser))
+    .catch((err) => {
+        console.log(err); 
+        return res.status(500).json(err);})
+}
+}
