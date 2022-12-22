@@ -34,6 +34,22 @@ addFriend(req, res) {
         return res.status(500).json(err);
     });
 }, 
+//remove a users friend 
+async removeFriend(req, res){
+    try {
+    const userRemoveFriend = await User.deleteOne(
+        { _id: req.params.userId},
+        {$unset: {friend: req.params.friendId}}, {new: true}
+    )
+    if(!userRemoveFriend) {
+        return res.status(404).json({message: 'No user or friend to remove'});
+    }
+    res.json(userRemoveFriend)
+} catch(err) {
+        console.log(err)
+        res.status(500).json(err)
+    }
+},
 
 //read all users
 readAllUsers(req, res){
@@ -53,6 +69,7 @@ findById(req, res){
         return res.status(500).json(err);})
 }, 
 
+//delete a user
 deleteUser(req, res){
     User.deleteOne(
         {_id: req.params.userId}
@@ -60,5 +77,7 @@ deleteUser(req, res){
     .catch((err) => {
         console.log(err); 
         return res.status(500).json(err);})
-}
+}, 
+
+
 }
