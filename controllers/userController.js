@@ -34,22 +34,21 @@ addFriend(req, res) {
         return res.status(500).json(err);
     });
 }, 
-//remove a users friend 
-async removeFriend(req, res){
-    try {
-    const userRemoveFriend = await User.deleteOne(
-        { _id: req.params.userId},
-        {$unset: {friend: req.params.friendId}}, {new: true}
-    )
-    if(!userRemoveFriend) {
-        return res.status(404).json({message: 'No user or friend to remove'});
-    }
-    res.json(userRemoveFriend)
-} catch(err) {
-        console.log(err)
-        res.status(500).json(err)
-    }
-},
+
+// //remove a users friend 
+removeFriend(req, res) {
+    User.findOneAndUpdate({ _id: req.params.userId }, { $pull: { friends: req.params.friendId } }, { new: true })
+      .then((dbUserData) => {
+        if (!dbUserData) {
+          return res.status(404).json({ message: 'No user with this id!' });
+        }
+        res.json(dbUserData);
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(500).json(err);
+      });
+  },
 
 //read all users
 readAllUsers(req, res){
